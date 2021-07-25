@@ -33,16 +33,17 @@ defmodule Hello.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.17"},
+      {:phoenix, "~> 1.4"},
       {:phoenix_pubsub, "~> 1.1"},
-      {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.1"},
-      {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix_ecto, "~> 4.2"},
+      {:phoenix_html, "~> 2.14"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.4"},
+      {:ecto_sql, "~> 3.5"},
+      {:postgrex, "~> 0.15"},
+      {:gettext, "~> 0.18"},
+      {:jason, "~> 1.2"},
+      {:wallaby, "~> 0.28", runtime: false, only: [:test, :test_e2e]},
     ]
   end
 
@@ -54,9 +55,13 @@ defmodule Hello.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
+      setup: ["deps.get", "ecto.setup", "phx.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      "npm.install": ["cmd 'cd assets && npm install'"],
+      "phx.compile": ["deps.compile", "compile --warnings-as-errors"],
+      "phx.setup": ["phx.compile", "npm.install"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"],
     ]
   end
 end
