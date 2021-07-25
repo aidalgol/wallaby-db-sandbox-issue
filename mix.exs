@@ -25,7 +25,10 @@ defmodule Hello.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(env) when env in [:test, :test_e2e] do
+    ["lib", "test/support"]
+  end
+
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -43,7 +46,7 @@ defmodule Hello.MixProject do
       {:postgrex, "~> 0.15"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
-      {:wallaby, "~> 0.28", runtime: false, only: [:test, :test_e2e]},
+      {:wallaby, "~> 0.28", runtime: false, only: [:test, :test_e2e]}
     ]
   end
 
@@ -61,7 +64,7 @@ defmodule Hello.MixProject do
       "npm.install": ["cmd 'cd assets && npm install'"],
       "phx.compile": ["deps.compile", "compile --warnings-as-errors"],
       "phx.setup": ["phx.compile", "npm.install"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end
