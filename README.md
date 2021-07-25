@@ -1,6 +1,6 @@
 # Hello
 
-To reproduce the problem (requires docker-compose) run,
+To reproduce the problem (requires docker-compose), run...
 
   1. `docker-compose run phoenix setup`
   2. `docker-compose run -e MIX_ENV="test_e2e" phoenix test`
