@@ -5,7 +5,7 @@ config :hello, Hello.Repo,
   username: "postgres",
   password: "postgres",
   database: "hello_dev",
-  hostname: "localhost",
+  hostname: System.get_env("POSTGRES_HOST") || "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

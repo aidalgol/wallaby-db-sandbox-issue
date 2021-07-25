@@ -1,0 +1,36 @@
+FROM hexpm/elixir:1.10.4-erlang-23.3.4.4-debian-buster-20210326
+
+# * inotify is required for live reload to work.
+#
+# * Node.js is required for the client-side assets.
+#
+# * PostgreSQL client so that the entrypoint script can check whether the DB is
+#   ready before continuing.
+#
+# * jq and curl are used by the entrypoint script's check that Selenium is ready.
+RUN apt-get update && apt-get install --yes gpg ca-certificates
+COPY 3rd-party-pubkeys/nodesource.gpg.key /tmp
+RUN apt-key add /tmp/nodesource.gpg.key && \
+    echo 'deb https://deb.nodesource.com/node_14.x buster main' > /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update && \
+    apt-get install --yes inotify-tools postgresql-client nodejs jq curl
+
+# Add normal user with the same UID as the current user, so that the file
+# ownership of the above volume contents match the user running docker.
+ARG UID
+RUN adduser --disabled-password --uid ${UID} hello
+
+# Drop privileges.
+USER hello
+
+# Use the host source directory, and use volumes for mix and hex data.
+RUN mkdir \
+    /home/hello/.mix \
+    /home/hello/.hex
+VOLUME /hello \
+       /home/hello/.mix \
+       /home/hello/.hex
+WORKDIR /hello
+
+CMD ["do", "deps.get,", "phx.setup,", "phx.server"]
+ENTRYPOINT ["/hello/dockerfile.dev.entrypoint.sh"]
