@@ -1,20 +1,23 @@
 # Hello
 
-To start your Phoenix server:
+To reproduce the problem (requires docker-compose) run,
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+  1. `docker-compose run phoenix setup`
+  2. `docker-compose run -e MIX_ENV="test_e2e" phoenix test`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+The part of the output that is of interest to us is this:
+```
+Users from test: [
+  %Hello.Accounts.User{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+    id: 1,
+    inserted_at: ~N[2021-07-25 04:31:36],
+    name: "Alice",
+    updated_at: ~N[2021-07-25 04:31:36],
+    username: "allie"
+  }
+]
+Users from controller: []
+```
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Which shows that the Wallaby test and the controller are not seeing the same data in the database.
